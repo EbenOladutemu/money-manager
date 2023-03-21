@@ -2,15 +2,17 @@
   <div class="container">
     <!-- <p>{{ msg }}</p> -->
     <ul>
-      <li v-for="list in lists" :key="list.id">
+      <li v-for="entry in entries" :key="entry.id">
         <div class="name-amount">
-          <span>{{ list.name }}</span>
-          <span>{{ Intl.NumberFormat().format(parseFloat(list.amount)) }}</span>
+          <span>{{ entry.name }}</span>
+          <span>
+            {{ Intl.NumberFormat().format(parseFloat(entry.amount)) }}
+          </span>
         </div>
         <img
           src="@/assets/icons/delete.svg"
           alt="delete"
-          @click="deleteItem(list.id)"
+          @click="deleteEntry(entry.id)"
         />
       </li>
     </ul>
@@ -18,10 +20,10 @@
       <span>Total</span>
       <span>₦{{ Intl.NumberFormat().format(parseFloat(total)) }}</span>
     </p>
-    <form @submit.prevent="add">
+    <form @submit.prevent="addEntry">
       <input v-model="expense.name" />
       <input type="number" v-model="expense.amount" />
-      <button type="submit">Add to list</button>
+      <button type="submit">Add to entry</button>
     </form>
   </div>
 </template>
@@ -35,11 +37,11 @@ defineProps<{
   msg: string;
 }>();
 
-let lists: any = ref([]);
+let entries: any = ref([]);
 
-const total = ref("");
+const total = ref("0");
 
-useStorage("lists", lists);
+useStorage("entries", entries);
 
 const expense = ref({
   id: 1,
@@ -47,7 +49,7 @@ const expense = ref({
   amount: null,
 });
 
-const add = (e: any) => {
+const addEntry = (e: any) => {
   if (!expense.value.amount) {
     e.target[1].focus();
   }
@@ -55,12 +57,12 @@ const add = (e: any) => {
     e.target[0].focus();
   }
   if (expense.value.name && expense.value.amount) {
-    lists.value.push({
+    entries.value.push({
       id: Math.floor(Math.random() * 10000),
       name: expense.value.name,
       amount: parseInt(expense.value.amount),
     });
-    console.log(lists.value);
+    console.log(entries.value);
     expense.value.name = "";
     expense.value.amount = null;
     e.target[0].focus();
@@ -68,14 +70,14 @@ const add = (e: any) => {
   }
 };
 
-const deleteItem = (id: any) => {
-  lists.value = lists.value.filter((list: any) => list.id !== id);
+const deleteEntry = (id: any) => {
+  entries.value = entries.value.filter((entry: any) => entry.id !== id);
   getTotal();
 };
 
 const getTotal = () => {
   const totalArray: any = [];
-  lists.value.forEach((element: any) => {
+  entries.value.forEach((element: any) => {
     totalArray.push(element.amount);
     const sum = totalArray.reduce(
       (accumulator: any, currentValue: any) => accumulator + currentValue,
@@ -83,6 +85,9 @@ const getTotal = () => {
     );
     total.value = sum;
   });
+  if (entries.value.length == 0) {
+    total.value = "0";
+  }
 };
 
 onMounted(() => {
@@ -147,13 +152,16 @@ li {
   &:hover > img {
     opacity: 1;
     margin-bottom: -2px;
-    transition: opacity 0.5s;
+    z-index: 1;
   }
 
   img {
     opacity: 0;
     width: 21px;
+    position: relative;
+    z-index: -1;
     cursor: pointer;
+    transition: all ease-in-out 0.2s;
 
     @media screen and (min-width: 991px) {
       margin-right: 13rem;
