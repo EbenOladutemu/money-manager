@@ -31,17 +31,24 @@
 <script lang="ts" setup>
 import { defineProps, ref, onMounted } from "vue";
 import { useStorage } from "@vueuse/core";
-import { list } from "@/store/modules";
+import { useListStore } from "@/store/list";
+import { useRoute } from "vue-router";
 
-defineProps<{
-  msg: string;
-}>();
+defineProps({
+  msg: {
+    type: String,
+  },
+});
 
 let entries: any = ref([]);
 
+const route = useRoute();
+
+const store = useListStore();
+
 const total = ref("0");
 
-useStorage("entries", entries);
+useStorage(route.fullPath.slice(1).replace("/", "-"), entries);
 
 const expense = ref({
   id: 1,
@@ -58,11 +65,10 @@ const addEntry = (e: any) => {
   }
   if (expense.value.name && expense.value.amount) {
     entries.value.push({
-      id: Math.floor(Math.random() * 10000),
+      id: Math.floor(Math.random() * 10000) + Date.now().toString(),
       name: expense.value.name,
       amount: parseInt(expense.value.amount),
     });
-    console.log(entries.value);
     expense.value.name = "";
     expense.value.amount = null;
     e.target[0].focus();

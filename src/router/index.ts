@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import HomeView from "../views/HomeView.vue";
+import HomeView from "../views/years/2023View.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -8,13 +8,58 @@ const routes: Array<RouteRecordRaw> = [
     component: HomeView,
   },
   {
-    path: "/about",
-    name: "about",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
+    path: "/2023",
+    name: "2023",
+    component: () => import("../views/years/2023View.vue"),
+    children: [
+      {
+        path: "january",
+        name: "january-2023",
+        component: () => import("../views/months/JanuaryView.vue"),
+      },
+      {
+        path: "february",
+        name: "february-2023",
+        component: () => import("../views/months/FebruaryView.vue"),
+      },
+      {
+        path: "march",
+        name: "march-2023",
+        component: () => import("../views/months/MarchView.vue"),
+      },
+      {
+        path: "april",
+        name: "april-2023",
+        component: () => import("../views/months/AprilView.vue"),
+      },
+      {
+        path: "may",
+        name: "may-2023",
+        component: () => import("../views/months/MayView.vue"),
+      },
+      {
+        path: "june",
+        name: "june-2023",
+        component: () => import("../views/months/JuneView.vue"),
+      },
+    ],
+  },
+  {
+    path: "/2024",
+    name: "2024",
+    component: () => import("../views/years/2024View.vue"),
+    children: [
+      {
+        path: "january",
+        name: "january-2024",
+        component: () => import("../views/months/JanuaryView.vue"),
+      },
+      {
+        path: "february",
+        name: "february-2024",
+        component: () => import("../views/months/FebruaryView.vue"),
+      },
+    ],
   },
 ];
 

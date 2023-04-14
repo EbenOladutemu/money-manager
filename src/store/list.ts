@@ -1,16 +1,26 @@
 import { defineStore } from "pinia";
-import { useLocalStorage } from "@vueuse/core";
+import { useStorage } from "@vueuse/core";
 import { ref } from "vue";
 
-export const useListStore = defineStore("list", () => {
-  const list = ref({
-    name: "Doughnut",
-    amount: 20000,
-  });
-  const saveList = (payload: any) => {
-    console.log("Here", payload);
-    list.value = payload;
-  };
+export const useListStore = defineStore("money-manager", {
+  // const moneyManager = ref({});
+  // const saveList = (payload: any) => {
+  //   console.log("Here", payload);
+  //   moneyManager.value = payload;
+  //   console.log(moneyManager.value);
+  // };
+  // useStorage("demo", "moneyManager.value");
+  // return { moneyManager, saveList };
 
-  return { list, saveList };
+  state: () => ({
+    moneyManager: {},
+  }),
+
+  actions: {
+    saveList(payload: any) {
+      console.log("Here", payload);
+      this.moneyManager = payload;
+      console.log(this.moneyManager);
+    },
+  },
 });

@@ -11,3 +11,5 @@ const app = createApp(App);
 app.use(pinia);
 
 createApp(App).use(router).mount("#app");
+
+document.title = "My Money Manager";
