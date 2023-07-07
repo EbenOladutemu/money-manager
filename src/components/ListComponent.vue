@@ -2,7 +2,7 @@
   <div class="container">
     <!-- <p>{{ msg }}</p> -->
     <ul>
-      <li v-for="entry in entries" :key="entry.id">
+      <li v-for="entry in entries" :key="entry.id" @click="editEntry(entry)">
         <div class="name-amount">
           <span>{{ entry.name }}</span>
           <span>
@@ -79,6 +79,14 @@ const addEntry = (e: any) => {
 const deleteEntry = (id: any) => {
   entries.value = entries.value.filter((entry: any) => entry.id !== id);
   getTotal();
+};
+
+const editEntry = (selectedEntry: any) => {
+  entries.value.find((entry: any) => entry.id != selectedEntry.id);
+
+  console.log(selectedEntry);
+
+  selectedEntry.name = "Dude";
 };
 
 const getTotal = () => {

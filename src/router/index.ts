@@ -42,6 +42,36 @@ const routes: Array<RouteRecordRaw> = [
         name: "june-2023",
         component: () => import("../views/months/JuneView.vue"),
       },
+      {
+        path: "july",
+        name: "july-2023",
+        component: () => import("../views/months/JulyView.vue"),
+      },
+      {
+        path: "august",
+        name: "august-2023",
+        component: () => import("../views/months/AugustView.vue"),
+      },
+      {
+        path: "september",
+        name: "september-2023",
+        component: () => import("../views/months/SeptemberView.vue"),
+      },
+      {
+        path: "october",
+        name: "october-2023",
+        component: () => import("../views/months/OctoberView.vue"),
+      },
+      {
+        path: "november",
+        name: "november-2023",
+        component: () => import("../views/months/NovemberView.vue"),
+      },
+      {
+        path: "december",
+        name: "december-2023",
+        component: () => import("../views/months/DecemberView.vue"),
+      },
     ],
   },
   {
