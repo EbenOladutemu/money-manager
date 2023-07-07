@@ -85,8 +85,6 @@ const editEntry = (selectedEntry: any) => {
   entries.value.find((entry: any) => entry.id != selectedEntry.id);
 
   console.log(selectedEntry);
-
-  selectedEntry.name = "Dude";
 };
 
 const getTotal = () => {

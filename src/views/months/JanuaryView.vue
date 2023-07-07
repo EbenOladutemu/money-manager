@@ -50,5 +50,4 @@ days.value.forEach((day) => {
     selectedDay.name == day ? (selectedDay.selected = true) : false;
   });
 });
-console.log(routine.value.days);
 </script>
