@@ -1,8 +1,8 @@
-import { defineStore } from "pinia";
-import { useStorage } from "@vueuse/core";
-import { ref } from "vue";
+import { defineStore } from 'pinia'
+import { useStorage } from '@vueuse/core'
+import { ref } from 'vue'
 
-export const useListStore = defineStore("money-manager", {
+export const useListStore = defineStore('money-manager', {
   // const moneyManager = ref({});
   // const saveList = (payload: any) => {
   //   console.log("Here", payload);
@@ -18,9 +18,9 @@ export const useListStore = defineStore("money-manager", {
 
   actions: {
     saveList(payload: any) {
-      console.log("Here", payload);
-      this.moneyManager = payload;
-      console.log(this.moneyManager);
+      console.log('Here', payload)
+      this.moneyManager = payload
+      console.log(this.moneyManager)
     },
   },
-});
+})

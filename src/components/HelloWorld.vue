@@ -28,27 +28,27 @@
 
 <script>
 export default {
-  name: "LoginForm",
+  name: 'LoginForm',
   data: function () {
     return {
       loginForm: {
-        username: "",
-        password: "",
+        username: '',
+        password: '',
       },
       disabled: true,
-    };
+    }
   },
   methods: {
     changeUsername(e) {
-      this.loginForm.username = e.target.value;
-      console.log(document.getElementById("username-input").value);
+      this.loginForm.username = e.target.value
+      console.log(document.getElementById('username-input').value)
     },
     changePassword(e) {
-      this.loginForm.password = e.target.value;
+      this.loginForm.password = e.target.value
     },
     submitForm() {
-      console.log(this.loginForm.username, "HTest", this.loginForm.password);
+      console.log(this.loginForm.username, 'HTest', this.loginForm.password)
     },
   },
-};
+}
 </script>

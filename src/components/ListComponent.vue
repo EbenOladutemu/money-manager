@@ -29,82 +29,83 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, ref, onMounted } from "vue";
-import { useStorage } from "@vueuse/core";
-import { useListStore } from "@/store/list";
-import { useRoute } from "vue-router";
+import { defineProps, ref, onMounted } from 'vue'
+import { useStorage } from '@vueuse/core'
+import { useListStore } from '@/store/list'
+import { useRoute } from 'vue-router'
 
 defineProps({
   msg: {
     type: String,
   },
-});
+})
 
-let entries: any = ref([]);
+let entries: any = ref([])
 
-const route = useRoute();
+const route = useRoute()
 
-const store = useListStore();
+const store = useListStore()
 
-const total = ref("0");
+const total = ref('0')
 
-useStorage(route.fullPath.slice(1).replace("/", "-"), entries);
+useStorage(route.fullPath.slice(1).replace('/', '-'), entries)
 
 const expense = ref({
   id: 1,
-  name: "",
+  name: '',
   amount: null,
-});
+})
 
 const addEntry = (e: any) => {
   if (!expense.value.amount) {
-    e.target[1].focus();
+    e.target[1].focus()
   }
   if (!expense.value.name) {
-    e.target[0].focus();
+    e.target[0].focus()
   }
+  console.log(entries.value)
   if (expense.value.name && expense.value.amount) {
     entries.value.push({
       id: Math.floor(Math.random() * 10000) + Date.now().toString(),
       name: expense.value.name,
       amount: parseInt(expense.value.amount),
-    });
-    expense.value.name = "";
-    expense.value.amount = null;
-    e.target[0].focus();
-    getTotal();
+    })
+    expense.value.name = ''
+    expense.value.amount = null
+    e.target[0].focus()
+    getTotal()
   }
-};
+}
 
 const deleteEntry = (id: any) => {
-  entries.value = entries.value.filter((entry: any) => entry.id !== id);
-  getTotal();
-};
+  entries.value = entries.value.filter((entry: any) => entry.id !== id)
+  getTotal()
+}
 
 const editEntry = (selectedEntry: any) => {
-  entries.value.find((entry: any) => entry.id != selectedEntry.id);
+  entries.value.find((entry: any) => entry.id != selectedEntry.id)
 
-  console.log(selectedEntry);
-};
+  console.log(selectedEntry)
+}
 
 const getTotal = () => {
-  const totalArray: any = [];
+  const totalArray: any = []
   entries.value.forEach((element: any) => {
-    totalArray.push(element.amount);
+    totalArray.push(element.amount)
     const sum = totalArray.reduce(
       (accumulator: any, currentValue: any) => accumulator + currentValue,
       0
-    );
-    total.value = sum;
-  });
+    )
+    total.value = sum
+  })
   if (entries.value.length == 0) {
-    total.value = "0";
+    total.value = '0'
   }
-};
+}
 
 onMounted(() => {
-  getTotal();
-});
+  getTotal()
+})
 </script>
 
 <style lang="scss" scoped>
@@ -212,7 +213,7 @@ li,
 }
 
 input {
-  &[type="number"] {
+  &[type='number'] {
     -moz-appearance: textfield;
 
     &::-webkit-inner-spin-button,

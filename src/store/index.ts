@@ -1,5 +1,5 @@
-import { createStore } from "vuex";
-import { list } from "./modules";
+import { createStore } from 'vuex'
+import { list } from './modules'
 
 export default createStore({
   state: {},
@@ -7,4 +7,4 @@ export default createStore({
   mutations: {},
   actions: {},
   modules: { list },
-});
+})

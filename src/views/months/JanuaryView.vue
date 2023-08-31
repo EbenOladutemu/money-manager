@@ -5,49 +5,49 @@
 </template>
 
 <script lang="ts" setup>
-import ListComponent from "@/components/ListComponent.vue";
-import { ref } from "vue";
+import ListComponent from '@/components/ListComponent.vue'
+import { ref } from 'vue'
 
-const doughnut = ref("Elereke Yum Yum");
+const doughnut = ref('Elereke Yum Yum')
 
 const routine = ref({
   days: [
     {
-      name: "Monday",
+      name: 'Monday',
       selected: false,
     },
     {
-      name: "Tuesday",
+      name: 'Tuesday',
       selected: false,
     },
     {
-      name: "Wednesday",
+      name: 'Wednesday',
       selected: false,
     },
     {
-      name: "Thursday",
+      name: 'Thursday',
       selected: false,
     },
     {
-      name: "Friday",
+      name: 'Friday',
       selected: false,
     },
     {
-      name: "Saturday",
+      name: 'Saturday',
       selected: false,
     },
     {
-      name: "Sunday",
+      name: 'Sunday',
       selected: false,
     },
   ],
-});
+})
 
-const days = ref(["Monday", "Tuesday", "Friday"]);
+const days = ref(['Monday', 'Tuesday', 'Friday'])
 
 days.value.forEach((day) => {
   routine.value.days.filter((selectedDay) => {
-    selectedDay.name == day ? (selectedDay.selected = true) : false;
-  });
-});
+    selectedDay.name == day ? (selectedDay.selected = true) : false
+  })
+})
 </script>
