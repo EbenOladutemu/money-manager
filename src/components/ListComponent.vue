@@ -21,10 +21,19 @@
       <span>₦{{ Intl.NumberFormat().format(parseFloat(total)) }}</span>
     </p>
     <form @submit.prevent="addEntry">
-      <input v-model="expense.name" />
+      <input v-model="expense.name" @input="errorMessage = ''" />
       <input type="number" v-model="expense.amount" />
       <button type="submit">Add to entry</button>
     </form>
+    <p :class="{ error: errorMessage != '' }">
+      {{
+        errorMessage == ''
+          ? `₦${Intl.NumberFormat().format(
+              parseFloat(expense.amount.length == 0 ? '0' : expense.amount)
+            )}`
+          : errorMessage
+      }}
+    </p>
   </div>
 </template>
 
@@ -42,6 +51,8 @@ defineProps({
 
 let entries: any = ref([])
 
+let errorMessage = ref('')
+
 const route = useRoute()
 
 const store = useListStore()
@@ -53,17 +64,24 @@ useStorage(route.fullPath.slice(1).replace('/', '-'), entries)
 const expense = ref({
   id: 1,
   name: '',
-  amount: null,
+  amount: '',
 })
 
 const addEntry = (e: any) => {
-  if (!expense.value.amount) {
-    e.target[1].focus()
-  }
   if (!expense.value.name) {
     e.target[0].focus()
   }
-  console.log(entries.value)
+
+  if (entries.value.find((entry: any) => entry.name === expense.value.name)) {
+    errorMessage.value =
+      'Name already exists. Edit or delete the entry or enter a different name'
+    return
+  }
+
+  if (!expense.value.amount) {
+    e.target[1].focus()
+  }
+
   if (expense.value.name && expense.value.amount) {
     entries.value.push({
       id: Math.floor(Math.random() * 10000) + Date.now().toString(),
@@ -71,7 +89,7 @@ const addEntry = (e: any) => {
       amount: parseInt(expense.value.amount),
     })
     expense.value.name = ''
-    expense.value.amount = null
+    expense.value.amount = ''
     e.target[0].focus()
     getTotal()
   }
@@ -84,8 +102,7 @@ const deleteEntry = (id: any) => {
 
 const editEntry = (selectedEntry: any) => {
   entries.value.find((entry: any) => entry.id != selectedEntry.id)
-
-  console.log(selectedEntry)
+  entries.value.find((entry: any) => entry.id != selectedEntry.id)
 }
 
 const getTotal = () => {
@@ -184,6 +201,7 @@ li {
 
 .name-amount {
   width: 60%;
+  margin-top: 1px;
 }
 
 li,
@@ -191,6 +209,7 @@ li,
 .total {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
 
   @media screen and (min-width: 800px) {
     width: 50%;
@@ -210,6 +229,10 @@ li,
   @media screen and (min-width: 800px) {
     width: 25%;
   }
+}
+
+.error {
+  color: #d01818;
 }
 
 input {
