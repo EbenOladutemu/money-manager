@@ -2,18 +2,25 @@
   <div class="container">
     <!-- <p>{{ msg }}</p> -->
     <ul>
-      <li v-for="entry in entries" :key="entry.id" @click="editEntry(entry)">
+      <li v-for="entry in entries" :key="entry.id">
         <div class="name-amount">
           <span>{{ entry.name }}</span>
           <span>
             {{ Intl.NumberFormat().format(parseFloat(entry.amount)) }}
           </span>
         </div>
-        <img
-          src="@/assets/icons/delete.svg"
-          alt="delete"
-          @click="deleteEntry(entry.id)"
-        />
+        <div>
+          <img
+            src="@/assets/icons/edit.svg"
+            alt="edit"
+            @click="editEntry(entry)"
+          />
+          <img
+            src="@/assets/icons/delete.svg"
+            alt="delete"
+            @click="deleteEntry(entry.id)"
+          />
+        </div>
       </li>
     </ul>
     <p class="total">
@@ -21,8 +28,8 @@
       <span>₦{{ Intl.NumberFormat().format(parseFloat(total)) }}</span>
     </p>
     <form @submit.prevent="addEntry">
-      <input v-model="expense.name" @input="errorMessage = ''" />
-      <input type="number" v-model="expense.amount" />
+      <input v-model="expense.name" @input="clearError" />
+      <input type="number" v-model="expense.amount" @input="clearError" />
       <button type="submit">Add to entry</button>
     </form>
     <p :class="{ error: errorMessage != '' }">
@@ -53,6 +60,10 @@ let entries: any = ref([])
 
 let errorMessage = ref('')
 
+let isEditing = ref(false)
+
+const selectedEntryId = ref('')
+
 const route = useRoute()
 
 const store = useListStore()
@@ -68,6 +79,24 @@ const expense = ref({
 })
 
 const addEntry = (e: any) => {
+  if (isEditing.value) {
+    const editedEntry = entries.value.find(
+      (entry: any) => entry.id == selectedEntryId.value
+    )
+
+    if (!expense.value.name || !expense.value.amount) {
+      errorMessage.value = 'Please enter both name and amount'
+      return
+    }
+
+    editedEntry.name = expense.value.name
+    editedEntry.amount = expense.value.amount
+    clearError()
+    clearInput()
+    e.target[0].focus()
+    return
+  }
+
   if (!expense.value.name) {
     e.target[0].focus()
   }
@@ -88,21 +117,34 @@ const addEntry = (e: any) => {
       name: expense.value.name,
       amount: parseInt(expense.value.amount),
     })
-    expense.value.name = ''
-    expense.value.amount = ''
+    clearInput()
     e.target[0].focus()
-    getTotal()
   }
+}
+
+const clearError = () => {
+  errorMessage.value = ''
+}
+
+const clearInput = () => {
+  expense.value.name = ''
+  expense.value.amount = ''
+  getTotal()
+  isEditing.value = false
 }
 
 const deleteEntry = (id: any) => {
   entries.value = entries.value.filter((entry: any) => entry.id !== id)
+  clearError()
   getTotal()
 }
 
 const editEntry = (selectedEntry: any) => {
-  entries.value.find((entry: any) => entry.id != selectedEntry.id)
-  entries.value.find((entry: any) => entry.id != selectedEntry.id)
+  document.querySelectorAll('input')[1].focus()
+  expense.value.name = selectedEntry.name
+  expense.value.amount = selectedEntry.amount
+  selectedEntryId.value = selectedEntry.id
+  isEditing.value = true
 }
 
 const getTotal = () => {
@@ -179,9 +221,8 @@ ul {
 li {
   margin-bottom: 0.75rem;
 
-  &:hover > img {
+  &:hover img {
     opacity: 1;
-    margin-bottom: -2px;
     z-index: 1;
   }
 
@@ -193,6 +234,11 @@ li {
     cursor: pointer;
     transition: all ease-in-out 0.2s;
 
+    &:first-child {
+      width: 18px;
+      margin-right: 1rem;
+    }
+
     @media screen and (min-width: 991px) {
       margin-right: 13rem;
     }
@@ -202,6 +248,10 @@ li {
 .name-amount {
   width: 60%;
   margin-top: 1px;
+
+  span {
+    padding-right: 0.5rem;
+  }
 }
 
 li,
