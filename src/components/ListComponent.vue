@@ -64,6 +64,8 @@ let isEditing = ref(false)
 
 const selectedEntryId = ref('')
 
+const selectedEntryName = ref('')
+
 const route = useRoute()
 
 const store = useListStore()
@@ -84,6 +86,18 @@ const addEntry = (e: any) => {
       (entry: any) => entry.id == selectedEntryId.value
     )
 
+    if (expense.value.name !== selectedEntryName.value) {
+      if (
+        entries.value.find(
+          (entry: any) =>
+            entry.name.toLowerCase() === expense.value.name.toLowerCase().trim()
+        )
+      ) {
+        errorMessage.value = `This name exists. Do you mean to edit ${expense.value.name.toUpperCase()}?`
+        return
+      }
+    }
+
     if (!expense.value.name || !expense.value.amount) {
       errorMessage.value = 'Please enter both name and amount'
       return
@@ -101,7 +115,12 @@ const addEntry = (e: any) => {
     e.target[0].focus()
   }
 
-  if (entries.value.find((entry: any) => entry.name === expense.value.name)) {
+  if (
+    entries.value.find(
+      (entry: any) =>
+        entry.name.toLowerCase() === expense.value.name.toLowerCase().trim()
+    )
+  ) {
     errorMessage.value =
       'Name already exists. Edit or delete the entry or enter a different name'
     return
@@ -114,7 +133,7 @@ const addEntry = (e: any) => {
   if (expense.value.name && expense.value.amount) {
     entries.value.push({
       id: Math.floor(Math.random() * 10000) + Date.now().toString(),
-      name: expense.value.name,
+      name: expense.value.name.trim(),
       amount: parseInt(expense.value.amount),
     })
     clearInput()
@@ -144,6 +163,7 @@ const editEntry = (selectedEntry: any) => {
   expense.value.name = selectedEntry.name
   expense.value.amount = selectedEntry.amount
   selectedEntryId.value = selectedEntry.id
+  selectedEntryName.value = selectedEntry.name
   isEditing.value = true
 }
 
