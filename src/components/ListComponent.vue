@@ -27,20 +27,29 @@
       <span>Total</span>
       <span>₦{{ Intl.NumberFormat().format(parseFloat(total)) }}</span>
     </p>
-    <form @submit.prevent="addEntry">
-      <input v-model="expense.name" @input="clearError" />
-      <input type="number" v-model="expense.amount" @input="clearError" />
-      <button type="submit">Add to entry</button>
-    </form>
     <p :class="{ error: errorMessage != '' }">
       {{
         errorMessage == ''
-          ? `₦${Intl.NumberFormat().format(
+          ? `Amount: ₦${Intl.NumberFormat().format(
               parseFloat(expense.amount.length == 0 ? '0' : expense.amount)
             )}`
           : errorMessage
       }}
     </p>
+    <form @submit.prevent="addEntry">
+      <input
+        v-model="expense.name"
+        @input="clearError"
+        placeholder="Enter name"
+      />
+      <input
+        type="number"
+        v-model="expense.amount"
+        @input="clearError"
+        placeholder="Enter amount"
+      />
+      <button type="submit">Add to entry</button>
+    </form>
   </div>
 </template>
 
@@ -282,7 +291,7 @@ li,
   align-items: flex-start;
 
   @media screen and (min-width: 800px) {
-    width: 50%;
+    width: 65%;
   }
 }
 
@@ -294,10 +303,10 @@ li,
 .total {
   font-weight: bold;
   margin-top: 1rem;
-  width: 60%;
+  width: 58.5%;
 
   @media screen and (min-width: 800px) {
-    width: 25%;
+    width: 41.5%;
   }
 }
 
