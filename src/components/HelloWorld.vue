@@ -33,9 +33,9 @@ export default {
     return {
       loginForm: {
         username: '',
-        password: '',
+        password: ''
       },
-      disabled: true,
+      disabled: true
     }
   },
   methods: {
@@ -48,7 +48,7 @@ export default {
     },
     submitForm() {
       console.log(this.loginForm.username, 'HTest', this.loginForm.password)
-    },
-  },
+    }
+  }
 }
 </script>

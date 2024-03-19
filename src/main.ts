@@ -13,3 +13,9 @@ app.use(pinia)
 createApp(App).use(router).mount('#app')
 
 document.title = 'My Money Manager'
+
+if (process.env.NODE_ENV == 'production') {
+  console.log = () => {
+    //
+  }
+}

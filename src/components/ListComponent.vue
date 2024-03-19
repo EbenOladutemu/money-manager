@@ -27,7 +27,7 @@
       <span>Total</span>
       <span>₦{{ Intl.NumberFormat().format(parseFloat(total)) }}</span>
     </p>
-    <p :class="{ error: errorMessage != '' }">
+    <p class="amount" :class="{ error: errorMessage != '' }">
       {{
         errorMessage == ''
           ? `Amount: ₦${Intl.NumberFormat().format(
@@ -48,21 +48,20 @@
         @input="clearError"
         placeholder="Enter amount"
       />
-      <button type="submit">Add to entry</button>
+      <button type="submit">{{ !isEditing ? 'Add to' : 'Edit' }} entry</button>
     </form>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { defineProps, ref, onMounted } from 'vue'
-import { useStorage } from '@vueuse/core'
-import { useListStore } from '@/store/list'
 import { useRoute } from 'vue-router'
+import axios from 'axios'
 
 defineProps({
   msg: {
-    type: String,
-  },
+    type: String
+  }
 })
 
 let entries: any = ref([])
@@ -77,19 +76,24 @@ const selectedEntryName = ref('')
 
 const route = useRoute()
 
-const store = useListStore()
-
 const total = ref('0')
 
-useStorage(route.fullPath.slice(1).replace('/', '-'), entries)
+const monthOfYear = ref(route.fullPath.slice(1).replace('/', '-'))
 
 const expense = ref({
   id: 1,
   name: '',
-  amount: '',
+  amount: ''
 })
 
-const addEntry = (e: any) => {
+const instance = axios.create({
+  baseURL: process.env.VUE_APP_BASE_URL,
+  headers: {
+    'Access-Control-Allow-Origin': '*'
+  }
+})
+
+function addEntry(e: any) {
   if (isEditing.value) {
     const editedEntry = entries.value.find(
       (entry: any) => entry.id == selectedEntryId.value
@@ -116,6 +120,7 @@ const addEntry = (e: any) => {
     editedEntry.amount = expense.value.amount
     clearError()
     clearInput()
+    saveEntry()
     e.target[0].focus()
     return
   }
@@ -143,10 +148,37 @@ const addEntry = (e: any) => {
     entries.value.push({
       id: Math.floor(Math.random() * 10000) + Date.now().toString(),
       name: expense.value.name.trim(),
-      amount: parseInt(expense.value.amount),
+      amount: parseInt(expense.value.amount)
     })
+
+    saveEntry()
+
     clearInput()
     e.target[0].focus()
+  }
+}
+
+async function saveEntry() {
+  try {
+    const response = await instance.patch(`/${monthOfYear.value}.json`, {
+      data: entries.value
+    })
+    console.log(response)
+  } catch (error) {
+    alert("Can't save entry right now " + error)
+  }
+}
+
+async function getEntries() {
+  try {
+    const response = await instance.get(`/${monthOfYear.value}.json`)
+    if (!response.data.data) {
+      return
+    }
+    entries.value = response.data.data
+    getTotal()
+  } catch (error) {
+    console.log("Can't save entry right now " + error)
   }
 }
 
@@ -164,7 +196,7 @@ const clearInput = () => {
 const deleteEntry = (id: any) => {
   entries.value = entries.value.filter((entry: any) => entry.id !== id)
   clearError()
-  getTotal()
+  saveEntry()
 }
 
 const editEntry = (selectedEntry: any) => {
@@ -186,13 +218,14 @@ const getTotal = () => {
     )
     total.value = sum
   })
+
   if (entries.value.length == 0) {
     total.value = '0'
   }
 }
 
 onMounted(() => {
-  getTotal()
+  getEntries()
 })
 </script>
 
@@ -293,6 +326,11 @@ li,
   @media screen and (min-width: 800px) {
     width: 65%;
   }
+}
+
+.amount {
+  color: #744eff;
+  font-weight: 600;
 }
 
 .container {

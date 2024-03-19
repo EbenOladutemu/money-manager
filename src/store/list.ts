@@ -13,7 +13,7 @@ export const useListStore = defineStore('money-manager', {
   // return { moneyManager, saveList };
 
   state: () => ({
-    moneyManager: {},
+    moneyManager: {}
   }),
 
   actions: {
@@ -21,6 +21,6 @@ export const useListStore = defineStore('money-manager', {
       console.log('Here', payload)
       this.moneyManager = payload
       console.log(this.moneyManager)
-    },
-  },
+    }
+  }
 })
