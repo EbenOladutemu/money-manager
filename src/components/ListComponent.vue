@@ -86,8 +86,10 @@ const expense = ref({
   amount: ''
 })
 
+const token = localStorage.getItem('token')
+
 const instance = axios.create({
-  baseURL: process.env.VUE_APP_BASE_URL,
+  baseURL: `${process.env.VUE_APP_BASE_URL}?auth=${token}`,
   headers: {
     'Access-Control-Allow-Origin': '*'
   }
@@ -172,6 +174,7 @@ async function saveEntry() {
 async function getEntries() {
   try {
     const response = await instance.get(`/${monthOfYear.value}.json`)
+    console.log(response.data.data)
     if (!response.data.data) {
       return
     }
@@ -225,6 +228,7 @@ const getTotal = () => {
 }
 
 onMounted(() => {
+  console.log('Wow')
   getEntries()
 })
 </script>

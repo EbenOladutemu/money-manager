@@ -13,6 +13,7 @@
     "@vueuse/core": "^9.12.0",
     "axios": "^1.6.8",
     "core-js": "^3.8.3",
+    "firebase": "^10.10.0",
     "pinia": "^2.0.30",
     "register-service-worker": "^1.7.2",
     "vue": "^3.2.13",

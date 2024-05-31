@@ -1,10 +1,8 @@
 <template>
-  <nav>
-    <router-link to="/2023">2023</router-link> |
-    <router-link to="/2024">2024</router-link>
-  </nav>
   <router-view />
 </template>
+
+<script setup></script>
 
 <style lang="scss">
 #app {
@@ -16,11 +14,15 @@
 }
 
 nav {
-  padding: 30px;
+  display: inline-block;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 
   a {
     font-weight: bold;
+    font-size: 18px;
     color: #2c3e50;
+    padding: 0.75rem;
 
     &.router-link-exact-active {
       color: #42b983;
