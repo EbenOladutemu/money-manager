@@ -47,7 +47,7 @@ function loginWithGoogle() {
       const user = result.user
       // IdP data available using getAdditionalUserInfo(result)
       // ...
-      console.log(result)
+      console.log(result, credential)
       localStorage.setItem('token', token)
     })
     .catch((error) => {
