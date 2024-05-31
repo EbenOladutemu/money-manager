@@ -89,7 +89,7 @@ const expense = ref({
 const token = localStorage.getItem('token')
 
 const instance = axios.create({
-  baseURL: `${process.env.VUE_APP_BASE_URL}?auth=${token}`,
+  baseURL: process.env.VUE_APP_BASE_URL,
   headers: {
     'Access-Control-Allow-Origin': '*'
   }
@@ -162,9 +162,12 @@ function addEntry(e: any) {
 
 async function saveEntry() {
   try {
-    const response = await instance.patch(`/${monthOfYear.value}.json`, {
-      data: entries.value
-    })
+    const response = await instance.patch(
+      `/${monthOfYear.value}.json?auth=${token}`,
+      {
+        data: entries.value
+      }
+    )
     console.log(response)
   } catch (error) {
     alert("Can't save entry right now " + error)
@@ -173,7 +176,9 @@ async function saveEntry() {
 
 async function getEntries() {
   try {
-    const response = await instance.get(`/${monthOfYear.value}.json`)
+    const response = await instance.get(
+      `/${monthOfYear.value}.json?auth=${token}`
+    )
     console.log(response.data.data)
     if (!response.data.data) {
       return
