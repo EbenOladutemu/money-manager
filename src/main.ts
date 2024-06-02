@@ -16,10 +16,8 @@ pinia.use(piniaPluginPersistedstate)
 
 document.title = 'My Money Manager'
 
-console.log(process.env)
-
 if (process.env.NODE_ENV == 'production') {
-  // console.log = () => {
-  //   //
-  // }
+  console.log = () => {
+    //
+  }
 }
