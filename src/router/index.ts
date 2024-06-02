@@ -21,6 +21,8 @@ const routes: Array<RouteRecordRaw> = [
     beforeEnter: (to, from, next) => {
       if (isAuthenticated.value) {
         next({ name: `${currentMonth.value}-${currentYear}` })
+      } else {
+        next()
       }
     }
   }
