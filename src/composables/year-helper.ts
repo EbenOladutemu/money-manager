@@ -2,7 +2,9 @@
 import { ref } from 'vue'
 
 export function useYearHelper() {
-  let startYear = new Date().getFullYear() - 1
+  const currentMonth = ref()
+  const currentYear = new Date().getFullYear()
+  let startYear = currentYear - 1
   const yearInFuture = 2050
   const years: any = ref([])
   const months = [
@@ -20,6 +22,13 @@ export function useYearHelper() {
     'December'
   ]
 
+  function getCurrentMonth() {
+    const month = new Date().getMonth()
+    currentMonth.value = months[month]
+  }
+
+  getCurrentMonth()
+
   function getYears() {
     while (startYear <= yearInFuture) {
       years.value.push(startYear)
@@ -29,5 +38,13 @@ export function useYearHelper() {
 
   getYears()
 
-  return { startYear, years, yearInFuture, getYears, months }
+  return {
+    startYear,
+    years,
+    yearInFuture,
+    getYears,
+    months,
+    currentMonth,
+    currentYear
+  }
 }

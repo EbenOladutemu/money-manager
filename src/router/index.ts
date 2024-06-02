@@ -1,84 +1,109 @@
-import { useYearHelper } from '@/composables/year-helper'
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import { createPinia } from 'pinia'
+import { createApp, ref } from 'vue'
+import { useYearHelper } from '@/composables/year-helper'
+import { useLoginStore } from '@/store/login'
+import App from '@/App.vue'
 
-const { yearInFuture } = useYearHelper()
+const pinia = createPinia()
+const app = createApp(App)
+app.use(pinia)
+
+const { yearInFuture, months, currentMonth, currentYear } = useYearHelper()
+const isAuthenticated = ref()
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: '/',
-    name: 'home',
-    redirect: localStorage.getItem('token') ? `2023/january` : '',
+    path: '/login',
+    name: 'Login',
     children: [],
-    component: () => import('../views/years/HomeView.vue')
+    component: () => import('../views/LoginView.vue'),
+    beforeEnter: (to, from, next) => {
+      if (isAuthenticated.value) {
+        next({ name: `${currentMonth.value}-${currentYear}` })
+      }
+    }
   }
 ]
 
-let year = new Date().getFullYear() - 1
+const monthsArray: any = []
+
+let year = currentYear - 1
+
+months.forEach((month: string) => {
+  month = month.toLowerCase()
+  monthsArray.push({
+    path: month,
+    name: `${month}-${year}`,
+    component: () => import('@/components/MonthComponent.vue')
+  })
+})
+
 while (year <= yearInFuture) {
   routes.push({
     path: `/${year}`,
     name: `${year}`,
-    component: () => import('../views/years/YearView.vue'),
+    component: () => import('../views/YearMonthView.vue'),
     children: [
       {
         path: 'january',
-        name: `january-${year}`,
-        component: () => import('../views/months/JanuaryView.vue')
+        name: `January-${year}`,
+        component: () => import('@/components/MonthComponent.vue')
       },
       {
         path: 'february',
-        name: `february-${year}`,
-        component: () => import('../views/months/FebruaryView.vue')
+        name: `February-${year}`,
+        component: () => import('@/components/MonthComponent.vue')
       },
       {
         path: 'march',
-        name: `march-${year}`,
-        component: () => import('../views/months/MarchView.vue')
+        name: `March-${year}`,
+        component: () => import('@/components/MonthComponent.vue')
       },
       {
         path: 'april',
-        name: `april-${year}`,
-        component: () => import('../views/months/AprilView.vue')
+        name: `April-${year}`,
+        component: () => import('@/components/MonthComponent.vue')
       },
       {
         path: 'may',
-        name: `may-${year}`,
-        component: () => import('../views/months/MayView.vue')
+        name: `May-${year}`,
+        component: () => import('@/components/MonthComponent.vue')
       },
       {
         path: 'june',
-        name: `june-${year}`,
-        component: () => import('../views/months/JuneView.vue')
+        name: `June-${year}`,
+        component: () => import('@/components/MonthComponent.vue')
       },
       {
         path: 'july',
-        name: `july-${year}`,
-        component: () => import('../views/months/JulyView.vue')
+        name: `July-${year}`,
+        component: () => import('@/components/MonthComponent.vue')
       },
       {
         path: 'august',
-        name: `august-${year}`,
-        component: () => import('../views/months/AugustView.vue')
+        name: `August-${year}`,
+        component: () => import('@/components/MonthComponent.vue')
       },
       {
         path: 'september',
-        name: `september-${year}`,
-        component: () => import('../views/months/SeptemberView.vue')
+        name: `September-${year}`,
+        component: () => import('@/components/MonthComponent.vue')
       },
       {
         path: 'october',
-        name: `october-${year}`,
-        component: () => import('../views/months/OctoberView.vue')
+        name: `October-${year}`,
+        component: () => import('@/components/MonthComponent.vue')
       },
       {
         path: 'november',
-        name: `november-${year}`,
-        component: () => import('../views/months/NovemberView.vue')
+        name: `November-${year}`,
+        component: () => import('@/components/MonthComponent.vue')
       },
       {
         path: 'december',
-        name: `december-${year}`,
-        component: () => import('../views/months/DecemberView.vue')
+        name: `December-${year}`,
+        component: () => import('@/components/MonthComponent.vue')
       }
     ]
   })
@@ -88,6 +113,16 @@ while (year <= yearInFuture) {
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  const { token } = useLoginStore()
+  isAuthenticated.value = token ? true : false
+  if (to.name != 'Login' && !isAuthenticated.value) {
+    next({ name: 'Login' })
+  } else {
+    next()
+  }
 })
 
 export default router

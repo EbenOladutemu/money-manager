@@ -1,0 +1,22 @@
+button {
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  border: none;
+  width: fit-content;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  background-color: #18bc9c;
+  border: 2px solid #18bc9c;
+  cursor: pointer;
+
+  &:focus{
+    opacity: 0.9;
+  }
+
+  &.btn-outline {
+    color: #18bc9c;
+    background-color: #fff;
+    width: 100%;
+  }
+}

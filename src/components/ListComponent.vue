@@ -55,8 +55,9 @@
 
 <script lang="ts" setup>
 import { defineProps, ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { onBeforeRouteLeave, useRoute } from 'vue-router'
 import axios from 'axios'
+import { useLoginStore } from '@/store/login'
 
 defineProps({
   msg: {
@@ -78,7 +79,7 @@ const route = useRoute()
 
 const total = ref('0')
 
-const monthOfYear = ref(route.fullPath.slice(1).replace('/', '-'))
+const monthOfYear = ref('')
 
 const expense = ref({
   id: 1,
@@ -86,10 +87,11 @@ const expense = ref({
   amount: ''
 })
 
-const token = localStorage.getItem('token')
+const token = useLoginStore().token
 
 const instance = axios.create({
-  baseURL: process.env.VUE_APP_BASE_URL,
+  baseURL:
+    'https://elereke-doughnut-default-rtdb.europe-west1.firebasedatabase.app',
   headers: {
     Authorization: `Bearer ${token}`,
     'Access-Control-Allow-Origin': '*'
@@ -228,8 +230,17 @@ const getTotal = () => {
   }
 }
 
+function formatRoute(path: string) {
+  return path.slice(1).replace('/', '-')
+}
+
 onMounted(() => {
-  console.log('Wow')
+  monthOfYear.value = formatRoute(route.fullPath)
+  getEntries()
+})
+
+onBeforeRouteLeave((to) => {
+  monthOfYear.value = formatRoute(to.path)
   getEntries()
 })
 </script>
