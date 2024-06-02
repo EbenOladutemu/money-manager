@@ -58,7 +58,6 @@ export const useLoginStore = defineStore(
           // IdP data available using getAdditionalUserInfo(result)
           // ...
           console.log(result, credential)
-          useSweetAlert().alert('You are in!', '', 'success')
           router.push({ name: `${currentMonth.value}-${currentYear}` })
         })
         .catch((error) => {
