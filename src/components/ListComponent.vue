@@ -188,7 +188,9 @@ async function getEntries() {
     getTotal()
   } catch (error: any) {
     console.log('Can not get entries', error)
-    if (error.response.status == 401) {
+    entries.value = []
+    total.value = '0'
+    if (error?.response?.status == 401) {
       Swal.fire({
         title: 'Unathorized request',
         text: 'Please login',
