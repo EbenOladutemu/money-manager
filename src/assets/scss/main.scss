@@ -20,3 +20,11 @@ button {
     width: 100%;
   }
 }
+
+.swal2-backdrop-show {
+  pointer-events: none;
+}
+
+.swal2-show {
+  pointer-events: all;
+}

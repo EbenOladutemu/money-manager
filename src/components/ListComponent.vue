@@ -56,8 +56,11 @@
 <script lang="ts" setup>
 import { defineProps, ref, onMounted } from 'vue'
 import { onBeforeRouteLeave, useRoute } from 'vue-router'
-import axios from 'axios'
+import axios, { AxiosError, AxiosResponse } from 'axios'
 import { useLoginStore } from '@/store/login'
+import { useSweetAlert } from '@/composables/sweet-alert-helper'
+import router from '@/router'
+import Swal from 'sweetalert2'
 
 defineProps({
   msg: {
@@ -183,8 +186,22 @@ async function getEntries() {
     }
     entries.value = response.data.data
     getTotal()
-  } catch (error) {
-    console.log("Can't save entry right now " + error)
+  } catch (error: any) {
+    console.log('Can not get entries', error)
+    if (error.response.status == 401) {
+      Swal.fire({
+        title: 'Unathorized request',
+        text: 'Please login',
+        icon: 'error'
+      }).then((result: any) => {
+        if (result.isConfirmed) {
+          console.log('Bro')
+          router.push('/login')
+          location.reload()
+        }
+      })
+      useLoginStore().$reset()
+    }
   }
 }
 

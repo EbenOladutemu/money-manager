@@ -11,6 +11,7 @@ import { ref } from 'vue'
 import { useYearHelper } from '@/composables/year-helper'
 import Swal from 'sweetalert2'
 import router from '@/router'
+import { useSweetAlert } from '@/composables/sweet-alert-helper'
 
 export const useLoginStore = defineStore(
   'login',
@@ -57,6 +58,7 @@ export const useLoginStore = defineStore(
           // IdP data available using getAdditionalUserInfo(result)
           // ...
           console.log(result, credential)
+          useSweetAlert().alert('You are in!', '', 'success')
           router.push({ name: `${currentMonth.value}-${currentYear}` })
         })
         .catch((error) => {
@@ -69,7 +71,7 @@ export const useLoginStore = defineStore(
           const credential = GoogleAuthProvider.credentialFromError(error)
           // ...
           console.log(error)
-          useAlert('Error', error, 'error')
+          useSweetAlert().alert('Error', error, 'error')
         })
     }
 
@@ -77,19 +79,23 @@ export const useLoginStore = defineStore(
       const auth = getAuth()
       signOut(auth)
         .then(() => {
-          useAlert('Signed out', 'Signed out successfully', 'success')
+          useSweetAlert().alert(
+            'Signed out',
+            'Signed out successfully',
+            'success'
+          )
+          $reset()
+          router.push('/login')
+          location.reload()
         })
         .catch((error: any) => {
-          useAlert('Error', error, 'error')
+          useSweetAlert().alert('Error', error, 'error')
         })
     }
 
-    function useAlert(title: string, text: any, icon: any) {
-      Swal.fire({
-        title,
-        text,
-        icon
-      })
+    function $reset() {
+      token.value = ''
+      user.value = ''
     }
 
     return {
@@ -97,7 +103,8 @@ export const useLoginStore = defineStore(
       loginWithGoogle,
       logOut,
       token,
-      user
+      user,
+      $reset
     }
   },
   {

@@ -34,7 +34,7 @@
 <script lang="ts" setup>
 import { useYearHelper } from '@/composables/year-helper'
 import { useLoginStore } from '@/store/login'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
 
 const loginStore = useLoginStore()
@@ -45,6 +45,10 @@ const currentYear: any = ref(new Date().getFullYear().toString())
 onBeforeRouteLeave((to, from, next) => {
   currentYear.value = to.matched[0].path.slice(1)
   next()
+})
+
+onMounted(() => {
+  loginStore.initFirebase()
 })
 </script>
 

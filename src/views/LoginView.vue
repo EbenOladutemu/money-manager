@@ -16,7 +16,7 @@ onMounted(() => {
 })
 </script>
 
-<style>
+<style scoped>
 div {
   margin-top: 5rem;
 }
