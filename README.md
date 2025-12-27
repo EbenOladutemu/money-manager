@@ -1,34 +1,43 @@
 # my-money-manager
 
-## Project setup
+## Requirements
+- Node 18+ recommended.
+- Yarn Classic (v1); the repo is pinned via `packageManager: "yarn@1.22.22"`.
+  You can run `corepack enable` to ensure the correct Yarn version is available.
+
+## Install
 ```
-npm install
+yarn install
 ```
 
-### Compiles and hot-reloads for development
+## Develop
 ```
-npm run serve
+yarn dev
+```
+Serves on http://localhost:8082 using Vite.
+
+## Build
+```
+yarn build
 ```
 
-### Compiles and minifies for production
+## Preview production build locally
 ```
-npm run build
-```
-
-### Run your unit tests
-```
-npm run test:unit
+yarn preview
 ```
 
-### Run your end-to-end tests
+## Tests
 ```
-npm run test:e2e
-```
-
-### Lints and fixes files
-```
-npm run lint
+yarn test:unit   # Jest
+yarn test:e2e    # Cypress
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Lint and type-check
+```
+yarn lint
+yarn type-check
+```
+
+## Notes
+- Vite entrypoint: `src/main.ts`; static assets live in `public/`.
+- The project has been migrated from npm/Vue CLI to Yarn + Vite.

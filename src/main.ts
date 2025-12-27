@@ -1,22 +1,25 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import App from './App.vue'
-import './registerServiceWorker'
-import router from './router'
+import { VueQueryPlugin } from '@tanstack/vue-query'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+import App from './App.vue'
+import router from './router'
 import './assets/scss/main.scss'
 
-const pinia = createPinia()
 const app = createApp(App)
+const pinia = createPinia()
+
+pinia.use(piniaPluginPersistedstate)
 
 app.use(pinia)
+app.use(router)
+app.use(VueQueryPlugin)
 
-createApp(App).use(router).mount('#app')
-pinia.use(piniaPluginPersistedstate)
+app.mount('#app')
 
 document.title = 'My Money Manager'
 
-if (process.env.NODE_ENV == 'production') {
+if (import.meta.env.PROD) {
   console.log = () => {
     //
   }

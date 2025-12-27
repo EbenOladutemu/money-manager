@@ -1,16 +1,16 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import { createPinia } from 'pinia'
-import { createApp, ref } from 'vue'
+import {
+  createRouter,
+  createWebHistory,
+  RouteLocationNormalized,
+  NavigationGuardNext,
+  RouteRecordRaw
+} from 'vue-router'
+import { ref } from 'vue'
 import { useYearHelper } from '@/composables/year-helper'
 import { useLoginStore } from '@/store/login'
-import App from '@/App.vue'
-
-const pinia = createPinia()
-const app = createApp(App)
-app.use(pinia)
 
 const { yearInFuture, months, currentMonth, currentYear } = useYearHelper()
-const isAuthenticated = ref()
+const isAuthenticated = ref(false)
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -18,7 +18,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Login',
     children: [],
     component: () => import('../views/LoginView.vue'),
-    beforeEnter: (to, from, next) => {
+    beforeEnter: (
+      to: RouteLocationNormalized,
+      from: RouteLocationNormalized,
+      next: NavigationGuardNext
+    ) => {
       if (isAuthenticated.value) {
         next({ name: `${currentMonth.value}-${currentYear}` })
       } else {
@@ -113,18 +117,25 @@ while (year <= yearInFuture) {
 }
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(
+  (
+    to: RouteLocationNormalized,
+    from: RouteLocationNormalized,
+    next: NavigationGuardNext
+  ) => {
   const { token } = useLoginStore()
-  isAuthenticated.value = token ? true : false
-  if (to.name != 'Login' && !isAuthenticated.value) {
+  isAuthenticated.value = !!token
+
+  if (to.name !== 'Login' && !isAuthenticated.value) {
     next({ name: 'Login' })
   } else {
     next()
   }
-})
+  }
+)
 
 export default router
