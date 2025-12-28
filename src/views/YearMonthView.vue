@@ -10,6 +10,10 @@
       Toggle {{ !showYears ? 'Years' : 'Months' }}
     </p>
 
+    <p class="year-total">
+      Year total (Jan - Dec): ₦{{ Intl.NumberFormat().format(yearTotal) }}
+    </p>
+
     <nav v-show="showYears" v-for="year in years" :key="year">
       <router-link :to="`/${year}`" @click="showYears = false">
         {{ year }}
@@ -34,22 +38,67 @@
 <script lang="ts" setup>
 import { useYearHelper } from '@/composables/year-helper'
 import { useLoginStore } from '@/store/login'
-import { onMounted, ref } from 'vue'
-import { onBeforeRouteLeave } from 'vue-router'
+import { onMounted, ref, watch } from 'vue'
+import { onBeforeRouteLeave, useRoute } from 'vue-router'
+import axios from 'axios'
 
 const loginStore = useLoginStore()
 const { years, months } = useYearHelper()
 const showYears = ref(false)
 const currentYear: any = ref(new Date().getFullYear().toString())
+const yearTotal = ref(0)
+const route = useRoute()
+
+const axiosInstance = axios.create({
+  baseURL:
+    'https://elereke-doughnut-default-rtdb.europe-west1.firebasedatabase.app',
+  headers: {
+    Authorization: `Bearer ${loginStore.token}`,
+    'Access-Control-Allow-Origin': '*'
+  }
+})
+
+const parseMonthKey = (year: string, month: string) =>
+  `${year}-${month.toLowerCase()}`
+
+const fetchYearTotal = async (year: string) => {
+  try {
+    const requests = months.map((month) =>
+      axiosInstance.get(`/${parseMonthKey(year, month)}.json`)
+    )
+    const responses = await Promise.all(requests)
+    const allEntries = responses.flatMap((res) => res.data?.data || [])
+    yearTotal.value = allEntries.reduce(
+      (sum: number, entry: any) => sum + Number(entry?.amount || 0),
+      0
+    )
+  } catch (error) {
+    console.log('Unable to fetch yearly total', error)
+    yearTotal.value = 0
+  }
+}
 
 onBeforeRouteLeave((to, from, next) => {
   currentYear.value = to.matched[0].path.slice(1)
+  fetchYearTotal(currentYear.value)
   next()
 })
 
 onMounted(() => {
   loginStore.initFirebase()
+  fetchYearTotal(currentYear.value)
 })
+
+watch(
+  () => route.path,
+  (newPath) => {
+    const year = newPath.split('/')[1]
+    if (year && year !== currentYear.value) {
+      currentYear.value = year
+      fetchYearTotal(year)
+    }
+  }
+)
 </script>
 
 <style>
@@ -69,5 +118,11 @@ button.logout {
   position: absolute;
   top: 1rem;
   right: 2rem;
+}
+
+.year-total {
+  margin: 0.5rem 0 1rem;
+  font-weight: 700;
+  color: #312e99;
 }
 </style>
