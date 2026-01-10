@@ -13,6 +13,9 @@
     <p class="year-total">
       Year total (Jan - Dec): ₦{{ Intl.NumberFormat().format(yearTotal) }}
     </p>
+    <p class="all-years-total">
+      All years sumtotal: ₦{{ Intl.NumberFormat().format(allYearsTotal) }}
+    </p>
 
     <nav v-show="showYears" v-for="year in years" :key="year">
       <router-link :to="`/${year}`" @click="showYears = false">
@@ -47,6 +50,7 @@ const { years, months } = useYearHelper()
 const showYears = ref(false)
 const currentYear = ref(new Date().getFullYear().toString())
 const yearTotal = ref(0)
+const allYearsTotal = ref(0)
 const route = useRoute()
 
 const axiosInstance = axios.create({
@@ -78,6 +82,32 @@ const fetchYearTotal = async (year: string) => {
   }
 }
 
+const fetchAllYearsTotal = async () => {
+  try {
+    const currentYearNumber = new Date().getFullYear()
+    const yearsToFetch = years.value
+      .filter((year: number) => year <= currentYearNumber)
+      .map(String)
+
+    const requests = yearsToFetch.flatMap((year: string) =>
+      months.map((month) =>
+        axiosInstance.get(`/${parseMonthKey(year, month)}.json`)
+      )
+    )
+
+    const responses = await Promise.all(requests)
+    const allEntries = responses.flatMap((res) => res.data?.data || [])
+
+    allYearsTotal.value = allEntries.reduce(
+      (sum: number, entry: any) => sum + Number(entry?.amount || 0),
+      0
+    )
+  } catch (error) {
+    console.log('Unable to fetch all years total', error)
+    allYearsTotal.value = 0
+  }
+}
+
 onBeforeRouteLeave((to, from, next) => {
   currentYear.value = to.matched[0].path.slice(1)
   fetchYearTotal(currentYear.value)
@@ -87,6 +117,7 @@ onBeforeRouteLeave((to, from, next) => {
 onMounted(() => {
   loginStore.initFirebase()
   fetchYearTotal(currentYear.value)
+  fetchAllYearsTotal()
 })
 
 watch(
@@ -124,5 +155,11 @@ button.logout {
   margin: 0.5rem 0 1rem;
   font-weight: 700;
   color: #312e99;
+}
+
+.all-years-total {
+  margin: 0 0 1.5rem;
+  font-weight: 600;
+  color: #eb7112;
 }
 </style>
