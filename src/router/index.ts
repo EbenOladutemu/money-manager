@@ -34,7 +34,7 @@ const routes: Array<RouteRecordRaw> = [
 
 const monthsArray: any = []
 
-let year = currentYear - 1
+let year = currentYear - (currentYear - 2023)
 
 months.forEach((month: string) => {
   month = month.toLowerCase()

@@ -4,7 +4,7 @@ import { ref } from 'vue'
 export function useYearHelper() {
   const currentMonth = ref()
   const currentYear = new Date().getFullYear()
-  let startYear = currentYear - 1
+  let startYear = 2023
   const yearInFuture = 2050
   const years: any = ref([])
   const months = [

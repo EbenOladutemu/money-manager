@@ -266,6 +266,7 @@ async function saveEntry() {
 async function getEntries() {
   try {
     const response = await instance.get(`/${monthOfYear.value}.json`)
+    console.log(monthOfYear.value)
     console.log(response.data.data)
     if (!response.data.data) {
       entries.value = []
@@ -286,7 +287,6 @@ async function getEntries() {
         icon: 'error'
       }).then((result: any) => {
         if (result.isConfirmed) {
-          console.log('Bro')
           router.push('/login')
           location.reload()
         }

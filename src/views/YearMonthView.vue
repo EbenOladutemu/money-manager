@@ -45,7 +45,7 @@ import axios from 'axios'
 const loginStore = useLoginStore()
 const { years, months } = useYearHelper()
 const showYears = ref(false)
-const currentYear: any = ref(new Date().getFullYear().toString())
+const currentYear = ref(new Date().getFullYear().toString())
 const yearTotal = ref(0)
 const route = useRoute()
 
